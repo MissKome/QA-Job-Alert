@@ -1,0 +1,13 @@
+{
+  "name": "testmeqa-job-engine",
+  "version": "1.0.0",
+  "description": "Hourly job aggregator: fetches, dedupes, categorizes, and pushes jobs to WordPress.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
