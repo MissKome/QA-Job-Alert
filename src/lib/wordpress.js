@@ -83,6 +83,16 @@ function escapeHtml(str = "") {
 }
 
 /**
+ * Diagnostic: asks WordPress "who am I logged in as?" using the same credentials
+ * the rest of this file uses. If the Authorization header is being stripped by the
+ * host/server before WordPress sees it, this comes back as an anonymous/failed
+ * response even though the username + application password are correct.
+ */
+export async function whoAmI() {
+  return wpFetch("users/me?context=edit");
+}
+
+/**
  * Publishes a single normalized+categorized job as a WP Job Manager "job_listing" post
  * (via the wp/v2/job-listings REST route), NOT as a regular blog post.
  * Returns the created listing's ID.
