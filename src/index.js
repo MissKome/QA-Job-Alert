@@ -7,7 +7,7 @@ import { fetchNigeriaBoards } from "./sources/nigeria-rss.js";
 import { dedupeJobs } from "./lib/dedupe.js";
 import { categorizeJob } from "./lib/categorize.js";
 import { loadStore, saveStore, pruneStore } from "./lib/store.js";
-import { publishJobToWordPress } from "./lib/wordpress.js";
+import { publishJobToWordPress, whoAmI } from "./lib/wordpress.js";
 
 const SOURCES = [
   { name: "remotive", fn: fetchRemotive },
@@ -39,6 +39,19 @@ async function fetchAllSources() {
 
 async function run() {
   console.log(`Job engine run started at ${new Date().toISOString()}${DRY_RUN ? " (DRY RUN)" : ""}`);
+
+  if (!DRY_RUN) {
+    try {
+      const me = await whoAmI();
+      console.log(`WordPress auth check: logged in as "${me.name}" (id ${me.id}, roles: ${(me.roles || []).join(", ")})`);
+    } catch (err) {
+      console.error(
+        `WordPress auth check FAILED: ${err.message}\n` +
+        `This usually means the Authorization header isn't reaching WordPress (common on shared hosting), ` +
+        `or the username/application password in your GitHub secrets is wrong.`
+      );
+    }
+  }
 
   const store = pruneStore(await loadStore());
   const allJobs = await fetchAllSources();
